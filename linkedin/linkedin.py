@@ -8,7 +8,7 @@
 # LinkedIn Account: http://www.linkedin.com/in/ozgurvt                                #
 #######################################################################################
 
-__version__ = "1.8.1"
+__version__ = "1.8.2"
 
 """
 Provides a Pure Python LinkedIn API Interface.
@@ -257,6 +257,7 @@ class LinkedIn(object):
             return Profile.create(response) # this creates Profile instance or gives you null
         except ConnectionError:
             return None
+
 
     def get_connections(self, member_id = None, public_url = None, fields=[]):
         """

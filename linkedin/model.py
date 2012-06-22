@@ -89,6 +89,50 @@ class Education(LinkedInModel):
         except:
             return None
 
+class RecommendationReceived(LinkedInModel):
+    """
+    class thats wraps recommendations-received
+    """
+    def __init__(self):
+        self.id         = None
+        self.recommendation_type = None
+        self.recommendation_text = None
+        self.recommender_id = None
+        self.recommender_first_name = None
+        self.recommender_last_name = None
+
+    @staticmethod
+    def create(node):
+        """
+
+        """
+        children = node.getElementsByTagName("recommendation")
+        result = []
+        for child in children:
+            Recommendations = RecommendationReceived()
+            # retrieve ID
+            Recommendations.id=child.getElementsByTagName("id")[0].firstChild.nodeValue
+
+
+            # retrieve recommendation_type
+            recommendation_type = child.getElementsByTagName('recommendation-type')[0]
+            if recommendation_type:
+                Recommendations.recommendation_type = recommendation_type.getElementsByTagName("code")[0].firstChild.nodeValue
+
+            # recommendation text
+            Recommendations.recommendation_text = child.getElementsByTagName("recommendation-text")[0].firstChild.nodeValue
+
+
+            recommender = child.getElementsByTagName('recommender')[0]
+            if recommender:
+                Recommendations.recommender_id          = recommender.getElementsByTagName('id')[0].firstChild.nodeValue
+                Recommendations.recommender_first_name  = recommender.getElementsByTagName('first-name')[0].firstChild.nodeValue
+                Recommendations.recommender_last_name   = recommender.getElementsByTagName('last-name')[0].firstChild.nodeValue
+            result.append(Recommendations)
+
+        return result
+
+
 class Position(LinkedInModel):
     """
     Class that wraps a business position info of a user
@@ -194,6 +238,7 @@ class Profile(LinkedInModel):
         self.current_status = None
         self.languages   = []
         self.skills      = []
+        self.recommendations = []
         
     @staticmethod
     def create(xml_string):
@@ -204,7 +249,7 @@ class Profile(LinkedInModel):
         If the given instance is not valid, this method returns NULL.
         """
         try:
-            document = minidom.parseString(xml_string)            
+            document = minidom.parseString(xml_string)
             person = document.getElementsByTagName("person")[0]
             profile = Profile()
             profile.id = profile._get_child(person, "id")
@@ -262,7 +307,15 @@ class Profile(LinkedInModel):
             if educations:
                 educations = educations[0]
                 profile.educations = Education.create(educations)
+
+            # create recommendations
+            recommendations = person.getElementsByTagName("recommendations-received")
+            if recommendations:
+                recommendations = recommendations[0]
+                profile.recommendations = RecommendationReceived.create(recommendations)
+
             return profile
+
         except:
             return None
 
