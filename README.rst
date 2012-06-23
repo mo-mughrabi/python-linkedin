@@ -6,3 +6,5 @@ Introduction
 	
 	
 
+VERSION 1.8.2:
+    - You can now use get_profile(fields=['recommendations-received']) and iterate through all recommendations
