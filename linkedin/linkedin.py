@@ -598,7 +598,7 @@ class LinkedIn(object):
         # Build up the XML request
         builder = XMLBuilder("share")
 
-        if len(comment) > 0:
+        if comment is not None and len(comment) > 0:
             comment_element = builder.create_element_with_text_node("comment", comment)
             builder.append_element_to_root(comment_element)
 
